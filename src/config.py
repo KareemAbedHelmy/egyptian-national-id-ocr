@@ -40,8 +40,8 @@ class ROI:
 # - national ID number is near the bottom
 # Tune these after viewing your saved ROI debug images.
 ROI_CONFIG: dict[str, ROI] = {
-    "full_name": ROI(0.30, 0.20, 0.96, 0.39),
-    "address": ROI(0.30, 0.39, 0.96, 0.66),
+    "full_name": ROI(0.30, 0.20, 0.96, 0.37),
+    "address": ROI(0.30, 0.40, 0.96, 0.66),
     "national_id": ROI(0.25, 0.77, 0.96, 0.94),
 }
 

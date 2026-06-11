@@ -57,15 +57,32 @@ def strip_field_label(field_name: str, text: str) -> str:
 
     return text.strip()
 
+def remove_field_labels(text: str) -> str:
+    """Remove common printed ID-card labels from OCR text."""
+    label_patterns = [
+        r"\bname\b",
+        r"\bfull\s*name\b",
+        r"\baddress\b",
+        r"الاسم",
+        r"\bاسم\b",
+        r"العنوان",
+        r"العنو\s*ان",
+        r"\bعنوان\b",
+        r"الرقم\s*القومي",
+        r"رقم\s*قومي",
+    ]
+
+    for pattern in label_patterns:
+        text = re.sub(pattern, " ", text, flags=re.IGNORECASE)
+
+    text = re.sub(r"\s+", " ", text)
+    return text.strip()
+
 
 def normalize_name_address_text(text: str, field_name: str) -> str:
-    """Clean OCR output for name/address fields.
-
-    This keeps Arabic characters for the real task and English characters for
-    synthetic/debug samples.
-    """
+    """Clean OCR output for name/address fields."""
     text = normalize_digits(text)
-    text = strip_field_label(field_name, text)
+    text = remove_field_labels(text)
 
     text = ARABIC_DIACRITICS.sub("", text)
     text = text.replace(TATWEEL, "")
@@ -79,7 +96,6 @@ def normalize_name_address_text(text: str, field_name: str) -> str:
 
     text = re.sub(r"\s+", " ", text)
     return text.strip()
-
 
 def normalize_arabic_text(text: str) -> str:
     """Arabic-only normalization used when strict Arabic cleaning is needed."""
@@ -170,3 +186,5 @@ def clean_field(field_name: str, raw_text: str) -> str:
         return normalize_name_address_text(raw_text, field_name)
 
     return raw_text.strip()
+
+
